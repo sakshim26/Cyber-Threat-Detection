@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cyber Threat Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        .form-container {
+            max-width: 650px;
+            margin: auto;
+            padding: 25px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-container input, .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            font-size: 1.4em;
+            color: #007BFF;
+            text-align: center;
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Cyber Threat Type Prediction</h2>
+        <form action="/predict" method="post">
+            <label for="duration">Duration:</label>
+            <input type="number" name="duration" required>
+
+            <label for="protocol_type">Protocol Type:</label>
+            <select name="protocol_type" required>
+                <option value="tcp">tcp</option>
+                <option value="udp">udp</option>
+                <option value="icmp">icmp</option>
+            </select>
+
+            <label for="service">Service:</label>
+            <select name="service" required>
+                <option value="http">http</option>
+                <option value="ftp_data">ftp_data</option>
+                <option value="smtp">smtp</option>
+                <option value="domain_u">domain_u</option>
+                <option value="eco_i">eco_i</option>
+                <option value="private">private</option>
+                <option value="other">other</option>
+                <!-- Add more as needed -->
+            </select>
+
+            <label for="flag">Flag:</label>
+            <select name="flag" required>
+                <option value="SF">SF</option>
+                <option value="S0">S0</option>
+                <option value="REJ">REJ</option>
+                <option value="RSTR">RSTR</option>
+                <option value="S1">S1</option>
+                <!-- Add more if needed -->
+            </select>
+
+            <label for="src_bytes">Source Bytes:</label>
+            <input type="number" name="src_bytes" required>
+
+            <label for="dst_bytes">Destination Bytes:</label>
+            <input type="number" name="dst_bytes" required>
+
+            <label for="count">Connection Count (last 2s):</label>
+            <input type="number" name="count" required>
+
+            <label for="srv_count">Service Count (last 2s):</label>
+            <input type="number" name="srv_count" required>
+
+            <label for="logged_in">Logged In (1 or 0):</label>
+            <select name="logged_in" required>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+
+            <input type="submit" value="Predict Threat Type">
+        </form>
+
+        {% if prediction_text is defined and prediction_text %}
+            <div class="result">{{ prediction_text }}</div>
+        {% endif %}
+
+    </div>
+</body>
+</html>
