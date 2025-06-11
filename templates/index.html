@@ -1,13 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cyber Threat Detection</title>
+    <title>Cyber Threat Detection - Form</title>
+    <meta charset="UTF-8">
     <style>
+        :root {
+            --primary-color: #007BFF;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --background-light: #f7f9fa;
+            --background-dark: #2c2c2c;
+            --text-dark: #333;
+            --text-light: #fff;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 50px;
-            background-color: #f4f4f4;
+            margin: 40px;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            transition: background-color 0.3s, color 0.3s;
         }
+
+        .dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-light);
+        }
+
+        .navbar {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .navbar a {
+            padding: 12px 24px;
+            margin: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            background-color: #0056b3;
+        }
+
+        .theme-toggle {
+            margin-top: 10px;
+            text-align: center;
+        }
+
         .form-container {
             max-width: 650px;
             margin: auto;
@@ -17,6 +60,12 @@
             border-radius: 12px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+
+        .dark-mode .form-container {
+            background-color: #3a3a3a;
+            border-color: #555;
+        }
+
         .form-container input, .form-container select {
             width: 100%;
             padding: 10px;
@@ -24,32 +73,56 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+
         .form-container input[type="submit"] {
-            background-color: #007BFF;
+            background-color: var(--success-color);
             color: white;
             border: none;
+            font-weight: bold;
             cursor: pointer;
         }
+
         .form-container input[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #218838;
         }
+
         .result {
             font-size: 1.4em;
-            color: #007BFF;
+            color: var(--success-color);
             text-align: center;
             margin-top: 20px;
         }
-        label {
-            font-weight: bold;
+
+        .tooltip {
+            font-size: 0.85em;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary-color);
         }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <a href="/">📝 Prediction Form</a>
+        <a href="/dashboard">📊 View Dashboard</a>
+    </div>
+
+    <div class="theme-toggle">
+        <button onclick="toggleTheme()">🌓 Toggle Dark Mode</button>
+    </div>
+
     <div class="form-container">
         <h2>Cyber Threat Type Prediction</h2>
-        <form action="/predict" method="post">
+        <form id="predict-form" action="/predict" method="post">
             <label for="duration">Duration:</label>
             <input type="number" name="duration" required>
+            <div class="tooltip">Length of the connection in seconds</div>
 
             <label for="protocol_type">Protocol Type:</label>
             <select name="protocol_type" required>
@@ -57,6 +130,7 @@
                 <option value="udp">udp</option>
                 <option value="icmp">icmp</option>
             </select>
+            <div class="tooltip">Network protocol used for connection</div>
 
             <label for="service">Service:</label>
             <select name="service" required>
@@ -67,8 +141,8 @@
                 <option value="eco_i">eco_i</option>
                 <option value="private">private</option>
                 <option value="other">other</option>
-                <!-- Add more as needed -->
             </select>
+            <div class="tooltip">Type of service accessed by the connection</div>
 
             <label for="flag">Flag:</label>
             <select name="flag" required>
@@ -77,8 +151,8 @@
                 <option value="REJ">REJ</option>
                 <option value="RSTR">RSTR</option>
                 <option value="S1">S1</option>
-                <!-- Add more if needed -->
             </select>
+            <div class="tooltip">Connection status based on TCP flags</div>
 
             <label for="src_bytes">Source Bytes:</label>
             <input type="number" name="src_bytes" required>
@@ -94,17 +168,28 @@
 
             <label for="logged_in">Logged In (1 or 0):</label>
             <select name="logged_in" required>
-                <option value="1">Yes</option>
-                <option value="0">No</option>
+                <option value="1">1 (Yes)</option>
+                <option value="0">0 (No)</option>
             </select>
 
             <input type="submit" value="Predict Threat Type">
         </form>
 
-        {% if prediction_text is defined and prediction_text %}
-            <div class="result">{{ prediction_text }}</div>
-        {% endif %}
+        <div class="loading" id="loading">🔄 Making prediction...</div>
 
+        {% if prediction_text %}
+        <div class="result">✅ {{ prediction_text }}</div>
+        {% endif %}
     </div>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        document.getElementById("predict-form").addEventListener("submit", function () {
+            document.getElementById("loading").style.display = "block";
+        });
+    </script>
 </body>
 </html>
